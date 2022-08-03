@@ -1,0 +1,40 @@
+---
+- hosts: default
+  become: true
+  tasks:
+    - name: Update the apt-get
+      apt:
+        update_cache: yes
+
+    - name: Install nginx
+      apt:
+        name: "nginx"
+        state: present
+
+    - name: Create a directory if it does not exist
+      file:
+        path: "/var/www/project"
+        state: directory
+
+    - name: Copy new temple file index.html file
+      template:
+        src: "index.html"
+        dest: "/var/www/project/index.html"
+
+    - name: Copy configuration file for nginx
+      copy:
+        src: "project.conf"
+        dest: "/etc/nginx/sites-available/project.conf"
+
+    - name: Enable site for project.conf
+      command:
+        a2ensite project.conf
+
+    - name: Disable site for default.conf
+      command:
+        a2dissite 000-default.conf
+
+    - name: Restart nginx server
+      service:
+        name: nginx
+        state: restarted
