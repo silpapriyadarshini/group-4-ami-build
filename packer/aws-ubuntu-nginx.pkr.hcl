@@ -17,7 +17,7 @@ locals {
 }
 
 
-source "amazon-ebs" "ubuntu" {
+source "amazon-ebs" "blue-green" {
   ami_name      = "${var.ami_prefix}-${local.timestamp}"
   instance_type = "t2.micro"
   region        = "ap-northeast-3"
@@ -39,12 +39,15 @@ source "amazon-ebs" "ubuntu" {
 }
 
 build {
-  name = "learn-packer"
+  name = "packer-BlueGreen"
   sources = [
     "source.amazon-ebs.ubuntu"
   ]
   provisioner "ansible" {
-    playbook_file = "./playbook.yml"
+    playbook_file = "./ansible/green/greensite.yml"
+  }
+  provisioner "ansible" {
+    playbook_file = "./ansible/blue/bluesite.yml"
   }
 
 }
