@@ -13,12 +13,12 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-       - name: AWS Authentication # we talked to aws 
-          uses: aws-actions/configure-aws-credentials@v1
-          with:
-            role-to-assume: arn:aws:iam::699330879220:role/github-actions-oidc
-            aws-region: ap-south-1
-            role-session-name: GithubAMI-PACKERDeploy
+      - name: AWS Authentication # we talked to aws 
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::699330879220:role/github-actions-oidc
+          aws-region: ap-south-1
+          role-session-name: GithubAMI-PACKERDeploy
       # fix backwards incompatibilities in template
       - name: Fix Template
         uses: hashicorp/packer-github-actions@master
