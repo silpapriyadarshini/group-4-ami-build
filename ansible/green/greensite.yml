@@ -23,7 +23,7 @@
 
     - name: Copy configuration file for nginx
       copy:
-        src: "files/green.conf"
+        src: "green.conf"
         dest: "/etc/nginx/sites-available/green.conf"
 
     - name: Enable site for green.conf

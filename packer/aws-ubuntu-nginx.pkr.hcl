@@ -17,8 +17,29 @@ locals {
 }
 
 
-source "amazon-ebs" "blue-green" {
-  ami_name      = "${var.ami_prefix}-${local.timestamp}"
+source "amazon-ebs" "nginx-green" {
+  ami_name      = "${var.ami_prefix}-green-${local.timestamp}"
+  instance_type = "t2.micro"
+  region        = "ap-northeast-3"
+  vpc_id        = "vpc-0c1dfdfedcfe2459f"
+
+  source_ami_filter {
+    filters = {
+      name                = "ubuntu/images/*ubuntu-jammy-22.04-amd64-server-*"
+      root-device-type    = "ebs"
+      virtualization-type = "hvm"
+    }
+    most_recent = true
+    owners      = ["099720109477"]
+  }
+  tags = {
+    BaseAMI = "{{ .SourceAMIName }}"
+  }
+  ssh_username = "ubuntu"
+}
+
+source "amazon-ebs" "nginx-blue" {
+  ami_name      = "${var.ami_prefix}-blue-${local.timestamp}"
   instance_type = "t2.micro"
   region        = "ap-northeast-3"
   vpc_id        = "vpc-0c1dfdfedcfe2459f"
@@ -41,7 +62,8 @@ source "amazon-ebs" "blue-green" {
 build {
   name = "packer-BlueGreen"
   sources = [
-    "source.amazon-ebs.ubuntu"
+    "source.amazon-ebs.nginx-green",
+    "source.amazon-ebs.nginx-blue"
   ]
   provisioner "ansible" {
     playbook_file = "./ansible/green/greensite.yml"

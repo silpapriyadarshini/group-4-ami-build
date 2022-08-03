@@ -23,7 +23,7 @@
 
     - name: Copy configuration file for nginx
       copy:
-        src: "files/blue.conf"
+        src: "blue.conf"
         dest: "/etc/nginx/sites-available/blue.conf"
 
     - name: Enable site for blue.conf
