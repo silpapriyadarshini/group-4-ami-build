@@ -1,23 +1,54 @@
-name: AutoScaling deployment in AWS
+---
+
+name: Packer
+
 on:
   push:
-    branches:
-      shabana_ASG  # clone the container and deploy through main branch
+
 jobs:
-   terraform-deploy:
-      runs-on: ubuntu-latest
-      permissions:
+  packer:
+    runs-on: ubuntu-latest
+    name: packer
+
+    permissions:
         packages: write
         contents: read
         id-token: write
-      steps:
-        - name: Clone our repository # we clone the repositoty
-          uses: actions/checkout@v3 # use the script 
-        - name: AWS Authentication # we talked to aws 
-          uses: aws-actions/configure-aws-credentials@v1
-          with:
-            role-to-assume: arn:aws:iam::699330879220:role/github-actions-oidc
-            aws-region: ap-south-1
-            role-session-name: GithubASGDeploy
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: AWS Authentication # we talked to aws 
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::699330879220:role/github-actions-oidc
+          aws-region: ap-south-1
+          role-session-name: GithubAMI-PACKERDeploy
+      # fix backwards incompatibilities in template
+      - name: Fix Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: fix
 
-            
+      # validate templates
+      - name: Validate Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: validate
+          arguments: -syntax-only
+          target: aws-ubuntu-nginx.pkr.hcl
+
+      # build artifact
+      - name: Build Artifact
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: build
+          arguments: "-color=false -on-error=abort"
+          #target: packer.pkr.hcl
+          target: aws-ubuntu-nginx.pkr.hcl
+          working_directory: packer/aws-ubuntu-nginx.pkr.hcl
+        #env:
+        #  PACKER_LOG: 1
+        #  HCP_CLIENT_ID: ${{ secrets.HCP_CLIENT_ID }}
+         # HCP_CLIENT_SECRET: ${{ secrets.HCP_CLIENT_SECRET }}
+
+      # additional steps to process artifacts
