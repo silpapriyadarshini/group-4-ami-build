@@ -1,1 +1,1 @@
-ami_prefix = "aws-ubuntu-nginx"
+ami_prefix = "aws-ubuntu-apache"

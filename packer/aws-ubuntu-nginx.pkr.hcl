@@ -9,7 +9,7 @@ packer {
 
 variable "ami_prefix" {
   type    = string
-  default = "aws-ubuntu-nginx"
+  default = "aws-ubuntu-apache"
 }
 
 locals {
@@ -17,7 +17,7 @@ locals {
 }
 
 
-source "amazon-ebs" "nginx-green" {
+source "amazon-ebs" "apache-green" {
   ami_name      = "${var.ami_prefix}-green-${local.timestamp}"
   instance_type = "t2.micro"
   // region = "ap-northeast-3"
@@ -25,7 +25,7 @@ source "amazon-ebs" "nginx-green" {
   region        = "ap-south-1"
   vpc_id        = "vpc-0f20e8ddf56dc2520"
   subnet_id     = "subnet-08cabd7e59e80aa23"
-  security_group_id = "sg-00cc3c80f10fe7c44"
+  security_group_id = "sg-0b2ff4d33f1c10f4a"
 
   source_ami_filter {
     filters = {
@@ -36,14 +36,22 @@ source "amazon-ebs" "nginx-green" {
     most_recent = true
     owners      = ["099720109477"]
   }
-  tags = {
-    BaseAMI = "{{ .SourceAMIName }}"
-  }
+  
   ssh_username = "ubuntu"
-  #ssh_port = 22
 }
 
-source "amazon-ebs" "nginx-blue" {
+build {
+  name = "packer-Green"
+  sources = [
+    "source.amazon-ebs.apache-green"
+  ]
+  provisioner "ansible" {
+    playbook_file = "./ansible/green/greensite.yml"
+  }
+
+}
+
+source "amazon-ebs" "apache-blue" {
   ami_name      = "${var.ami_prefix}-blue-${local.timestamp}"
   instance_type = "t2.micro"
   // region = "ap-northeast-3"
@@ -51,7 +59,7 @@ source "amazon-ebs" "nginx-blue" {
   region        = "ap-south-1"
   vpc_id        = "vpc-0f20e8ddf56dc2520"
   subnet_id     = "subnet-08cabd7e59e80aa23"
-  security_group_id = "sg-00cc3c80f10fe7c44"
+  security_group_id = "sg-0b2ff4d33f1c10f4a"
 
   source_ami_filter {
     filters = {
@@ -62,22 +70,15 @@ source "amazon-ebs" "nginx-blue" {
     most_recent = true
     owners      = ["099720109477"]
   }
-  tags = {
-    BaseAMI = "{{ .SourceAMIName }}"
-  }
+
   ssh_username = "ubuntu"
-  #ssh_port = 22
 }
 
 build {
-  name = "packer-BlueGreen"
+  name = "packer-Blue"
   sources = [
-    "source.amazon-ebs.nginx-green",
-    "source.amazon-ebs.nginx-blue"
+    "source.amazon-ebs.apache-blue"
   ]
-  provisioner "ansible" {
-    playbook_file = "./ansible/green/greensite.yml"
-  }
   provisioner "ansible" {
     playbook_file = "./ansible/blue/bluesite.yml"
   }
