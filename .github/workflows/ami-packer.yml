@@ -42,9 +42,9 @@ jobs:
           #target: packer.pkr.hcl
           target: aws-ubuntu-nginx.pkr.hcl
           working_directory: infrastructure/packer
-        env:
-          PACKER_LOG: 1
-          HCP_CLIENT_ID: ${{ secrets.HCP_CLIENT_ID }}
-          HCP_CLIENT_SECRET: ${{ secrets.HCP_CLIENT_SECRET }}
+        #env:
+        #  PACKER_LOG: 1
+        #  HCP_CLIENT_ID: ${{ secrets.HCP_CLIENT_ID }}
+         # HCP_CLIENT_SECRET: ${{ secrets.HCP_CLIENT_SECRET }}
 
       # additional steps to process artifacts
