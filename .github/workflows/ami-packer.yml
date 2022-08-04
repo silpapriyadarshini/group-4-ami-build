@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: AWS Authentication # we talked to aws 
           uses: aws-actions/configure-aws-credentials@v1
           with:
@@ -41,7 +41,7 @@ jobs:
           arguments: "-color=false -on-error=abort"
           #target: packer.pkr.hcl
           target: aws-ubuntu-nginx.pkr.hcl
-          working_directory: infrastructure/packer
+          working_directory: packer/aws-ubuntu-nginx.pkr.hcl
         #env:
         #  PACKER_LOG: 1
         #  HCP_CLIENT_ID: ${{ secrets.HCP_CLIENT_ID }}
