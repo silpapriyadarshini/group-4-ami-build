@@ -6,9 +6,9 @@
       apt:
         update_cache: yes
 
-    - name: Install nginx
+    - name: Install apache2
       apt:
-        name: "nginx"
+        name: "apache2"
         state: present
 
     - name: Create a directory if it does not exist
@@ -16,25 +16,25 @@
         path: "/var/www/green"
         state: directory
 
-    - name: Copy new temple file index.html file
+    - name: Copy new template index.html file
       template:
         src: "index.html"
         dest: "/var/www/green/index.html"
 
-    - name: Copy configuration file for nginx
+    - name: Copy configuration file for apache2
       copy:
         src: "green.conf"
-        dest: "/etc/nginx/sites-available/green.conf"
-
-    - name: Enable site for green.conf
-      command:
-        a2ensite green.conf
+        dest: "/etc/apache2/sites-available/green.conf"
 
     - name: Disable site for default.conf
       command:
         a2dissite 000-default.conf
 
-    - name: Restart nginx server
+    - name: Enable site for green.conf
+      command:
+        a2ensite green.conf
+
+    - name: Restart apache2 server
       service:
-        name: nginx
+        name: apache2
         state: restarted

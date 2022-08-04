@@ -20,10 +20,12 @@ locals {
 source "amazon-ebs" "nginx-green" {
   ami_name      = "${var.ami_prefix}-green-${local.timestamp}"
   instance_type = "t2.micro"
-  region        = "eu-west-1"
-  vpc_id        = "vpc-07df32fc1acfe9e20"
-  subnet_id     = "subnet-08095d31e690df562"
-  security_group_id = "sg-0f7c67da3f684f4a8"
+  // region = "ap-northeast-3"
+  // vpc_id = "vpc-0c1dfdfedcfe2459f"
+  region        = "ap-south-1"
+  vpc_id        = "vpc-0f20e8ddf56dc2520"
+  subnet_id     = "subnet-08cabd7e59e80aa23"
+  security_group_id = "sg-00cc3c80f10fe7c44"
 
   source_ami_filter {
     filters = {
@@ -38,16 +40,18 @@ source "amazon-ebs" "nginx-green" {
     BaseAMI = "{{ .SourceAMIName }}"
   }
   ssh_username = "ubuntu"
-  ssh_port = 22
+  #ssh_port = 22
 }
 
 source "amazon-ebs" "nginx-blue" {
   ami_name      = "${var.ami_prefix}-blue-${local.timestamp}"
   instance_type = "t2.micro"
-  region        = "eu-west-1"
-  vpc_id        = "vpc-07df32fc1acfe9e20"
-  subnet_id     = "subnet-08095d31e690df562"
-  security_group_id = "sg-0f7c67da3f684f4a8"
+  // region = "ap-northeast-3"
+  // vpc_id = "vpc-0c1dfdfedcfe2459f"
+  region        = "ap-south-1"
+  vpc_id        = "vpc-0f20e8ddf56dc2520"
+  subnet_id     = "subnet-08cabd7e59e80aa23"
+  security_group_id = "sg-00cc3c80f10fe7c44"
 
   source_ami_filter {
     filters = {
@@ -62,7 +66,7 @@ source "amazon-ebs" "nginx-blue" {
     BaseAMI = "{{ .SourceAMIName }}"
   }
   ssh_username = "ubuntu"
-  ssh_port = 22
+  #ssh_port = 22
 }
 
 build {
