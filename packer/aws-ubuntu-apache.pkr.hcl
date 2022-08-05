@@ -43,7 +43,9 @@ source "amazon-ebs" "apache-green" {
     most_recent = true
     owners      = ["099720109477"]
   }
-  
+  tags = {
+    Name = "apache-green"
+  }
   ssh_username = "ubuntu"
 }
 
@@ -76,6 +78,9 @@ source "amazon-ebs" "apache-blue" {
     }
     most_recent = true
     owners      = ["099720109477"]
+  }
+  tags = {
+    Name = "apache-blue"
   }
 
   ssh_username = "ubuntu"
